@@ -88,9 +88,7 @@ class StorageHandler(StorageUI):
         logger.info(f'Set box amount: {amount}')
         skip_first = True
         retry = Timer(1, count=2)
-        # Track how many times current stays the same to detect UI cap
-        stable_count = 0
-        prev_current = current
+        click_count = 0
         for _ in self.loop():
             if skip_first:
                 skip_first = False
@@ -99,14 +97,7 @@ class StorageHandler(StorageUI):
             diff = amount - current
             if diff == 0:
                 break
-
-            # Detect if the amount stopped changing (UI cap reached)
-            if current == prev_current:
-                stable_count += 1
-            else:
-                stable_count = 0
-                prev_current = current
-            if stable_count >= 5:
+            if click_count >= 2:
                 logger.warning(f'Box amount stuck at {current}, '
                                f'requested {amount} but only {current} available')
                 break
@@ -114,6 +105,7 @@ class StorageHandler(StorageUI):
             if retry.reached():
                 button = AMOUNT_PLUS if diff > 0 else AMOUNT_MINUS
                 self.device.multi_click(button, n=abs(diff), interval=(0.1, 0.2))
+                click_count += 1
                 retry.reset()
 
         logger.info(f'Box amount set to {current}')
