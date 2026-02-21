@@ -18,7 +18,7 @@ docker run -it \
   binss/azurlaneautoscript:arm64
 
 # requirements
-cd /app/pyroot/bin && ./pip install onepush==1.4.0 pydantic uiautomator2cache
+docker exec -it azurlaneautoscript /app/pyroot/bin/pip install onepush==1.4.0 pydantic uiautomator2cache
 
 #Config
 模拟器 Serial: host.docker.internal:5555
