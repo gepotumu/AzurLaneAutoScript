@@ -4,14 +4,14 @@ adb devices
 # 先连接到模拟器
 adb -s emulator-5554 tcpip 5555
 
-# DOCKER
+# DOCKER (REPLACE {USERNAME} TO YOUR USERNAME)
 docker run -it \
   --name azurlaneautoscript \
   -e TZ=Asia/Shanghai \
   -p 127.0.0.1:22267:22267 \
-  -v /Users/finderz/Documents/AzurLaneAutoScript:/app/AzurLaneAutoScript:rw \
-  -v /Users/finderz/.android/adbkey:/root/.android/adbkey:ro \
-  -v /Users/finderz/.android/adbkey.pub:/root/.android/adbkey.pub:ro \
+  -v /Users/{USERNAME}/Documents/AzurLaneAutoScript:/app/AzurLaneAutoScript:rw \
+  -v /Users/{USERNAME}/.android/adbkey:/root/.android/adbkey:ro \
+  -v /Users/{USERNAME}/.android/adbkey.pub:/root/.android/adbkey.pub:ro \
   --log-opt max-size=20m \
   --log-opt max-file=5 \
   -d \
