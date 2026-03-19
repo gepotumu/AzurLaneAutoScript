@@ -35,6 +35,7 @@ class LoginHandler(UI):
         orientation_timer = Timer(5)
         login_success = False
         login_click_count = 0
+        login_success_click_count = 0
         self.device.stuck_record_clear()
         self.device.click_record_clear()
 
@@ -58,12 +59,28 @@ class LoginHandler(UI):
             # Login
             if self.match_template_color(LOGIN_CHECK, offset=(30, 30), interval=5):
                 login_click_count += 1
+                if login_success:
+                    login_success_click_count += 1
                 if login_click_count > 20:
                     logger.warning(f'Login click count exceeded 20 ({login_click_count}), '
                                    f'client may have detected frequent logins, restarting game')
                     self.device.app_stop()
                     self.device.app_start()
                     login_click_count = 0
+                    login_success_click_count = 0
+                    login_success = False
+                    confirm_timer.reset()
+                    self.device.stuck_record_clear()
+                    self.device.click_record_clear()
+                    continue
+                if login_success_click_count > 6:
+                    logger.warning(f'Login stuck after login success, '
+                                   f'clicked {login_success_click_count} times without entering main, '
+                                   f'restarting game')
+                    self.device.app_stop()
+                    self.device.app_start()
+                    login_click_count = 0
+                    login_success_click_count = 0
                     login_success = False
                     confirm_timer.reset()
                     self.device.stuck_record_clear()
